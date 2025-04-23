@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-blue {
+            background-color: #3498db;
+        }
+        .btn-edit {
+            background-color: #2ecc71;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+        .empty-message {
+            font-style: italic;
+            color: #777;
+        }
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        .search-form {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        .search-form select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-form button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-form .reset {
+            padding: 8px 16px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Student List</h1>
+
+    <div class="btn-container">
+        <a th:href="@{/students/register}" class="btn btn-blue">Register New Student</a>
+        <a th:href="@{/students/dashboard}" class="btn btn-blue">View Dashboard</a>
+    </div>
+
+    <form class="search-form" th:action="@{/students/list}" method="get">
+        <input type="text" name="search" th:value="${search}" placeholder="Search..." />
+        <select name="searchBy">
+            <option value="" th:selected="${searchBy == null}">All Fields</option>
+            <option value="name" th:selected="${searchBy == 'name'}">Name</option>
+            <option value="major" th:selected="${searchBy == 'major'}">Major</option>
+        </select>
+        <button type="submit">Search</button>
+        <a th:href="@{/students/list}" class="reset">Reset</a>
+    </form>
+
+    <div th:if="${students.empty}" class="empty-message">
+        <p>No students found matching your search criteria.</p>
+    </div>
+
+    <table th:unless="${students.empty}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Major</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, stat : ${students}">
+            <td th:text="${student.name}">John Doe</td>
+            <td th:text="${student.email}">john@example.com</td>
+            <td th:text="${student.major}">Computer Science</td>
+            <td class="actions">
+                <a th:href="@{/students/edit/{index}(index=${stat.index})}" class="btn btn-edit">Edit</a>
+                <a th:href="@{/students/confirm-delete/{index}(index=${stat.index})}" class="btn btn-delete">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <a th:href="@{/}" class="btn btn-blue">Back to Home</a>
+    </p>
+</div>
+</body>
+</html>
